@@ -1,21 +1,13 @@
-# Base Image
-FROM jupyter/base-notebook
+FROM centos:8
 
-# Maintainer
-LABEL maintainer "Shiho ASA"
+MAINTAINER ccy5906
+LABEL "purpose"="TEST"
 
-# Configure environment
-ENV CONDA_DIR=/opt/conda \
-    NB_USER=jovyan
-    
-# Install Jupyter Notebook and Hub
-RUN conda install --quiet --yes \
-    'numpy=1.13.*' \
-    'scipy=0.19.*' \
-    'sympy=1.1.*' \
-    'matplotlib=2.1.*' \
-    && conda clean -tipsy && \
-    fix-permissions $CONDA_DIR
+RUN yum install httpd -y
+ADD test.html /var/www/html
 
-# Install Sample Notebook
-COPY sample_notebook/CavityFlow_with_Navier-Stokes.ipynb /home/$NB_USER/
+WORKDIR /var/www/html
+RUN ["/bin/bash","-c","echo hello >> test2.html"]
+EXPOSE 80
+
+CMD apachectl -DFOREGROUND
